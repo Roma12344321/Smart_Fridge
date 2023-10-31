@@ -1,0 +1,14 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_fridge"
+        android:icon="@drawable/baseline_food_bank_24"
+        android:title="Fridge" />
+    <item
+        android:id="@+id/navigation_recipe"
+        android:icon="@drawable/baseline_fastfood_24"
+        android:title="Recipe" />
+    <item
+        android:id="@+id/navigation_cart"
+        android:icon="@drawable/baseline_shopping_cart_24"
+        android:title="Cart" />
+</menu>
