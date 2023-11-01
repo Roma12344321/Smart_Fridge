@@ -3,38 +3,39 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/mainActivity">
+    app:startDestination="@id/fridgeFragment">
 
-    <activity
-        android:id="@+id/mainActivity"
-        android:name="com.dev.smart_fridge.presentation.MainActivity"
-        android:label="activity_main"
-        tools:layout="@layout/activity_main" />
     <fragment
         android:id="@+id/cartFragment"
         android:name="com.dev.smart_fridge.presentation.fragments.CartFragment"
         android:label="CartFragment" >
         <action
-            android:id="@+id/action_cartFragment_to_mainActivity"
-            app:destination="@id/mainActivity" />
+            android:id="@+id/action_cartFragment_to_fridgeFragment"
+            app:destination="@id/fridgeFragment" />
+        <action
+            android:id="@+id/action_cartFragment_to_recipeFragment"
+            app:destination="@id/recipeFragment" />
     </fragment>
     <fragment
         android:id="@+id/recipeFragment"
         android:name="com.dev.smart_fridge.presentation.fragments.RecipeFragment"
         android:label="RecipeFragment" >
         <action
-            android:id="@+id/action_recipeFragment_to_mainActivity"
-            app:destination="@id/mainActivity" />
+            android:id="@+id/action_recipeFragment_to_fridgeFragment"
+            app:destination="@id/fridgeFragment" />
+        <action
+            android:id="@+id/action_recipeFragment_to_cartFragment"
+            app:destination="@id/cartFragment" />
     </fragment>
     <fragment
         android:id="@+id/fridgeFragment"
         android:name="com.dev.smart_fridge.presentation.fragments.FridgeFragment"
         android:label="FridgeFragment" >
         <action
-            android:id="@+id/action_fridgeFragment_to_mainActivity"
-            app:destination="@id/mainActivity" />
+            android:id="@+id/action_fridgeFragment_to_cartFragment"
+            app:destination="@id/cartFragment" />
         <action
-            android:id="@+id/action_fridgeFragment_to_mainActivity2"
-            app:destination="@id/mainActivity" />
+            android:id="@+id/action_fridgeFragment_to_recipeFragment"
+            app:destination="@id/recipeFragment" />
     </fragment>
 </navigation>
