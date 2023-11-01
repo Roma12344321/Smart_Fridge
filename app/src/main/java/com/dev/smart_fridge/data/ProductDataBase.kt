@@ -10,16 +10,31 @@ import com.dev.smart_fridge.domain.Product
 
 @Database(entities = [Product::class], version = 1, exportSchema = false)
 abstract class ProductDataBase : RoomDatabase() {
+
+    abstract fun productDao():ProductDao
     companion object {
+
+        private var INSTANCE: ProductDataBase? = null
+        private val LOCK = Any()
+        private const val DB_NAME = "product_item.db"
+
         fun getInstance(application: Application): ProductDataBase {
-            val instance = Room.databaseBuilder(
-                application,
-                ProductDataBase::class.java,
-                "products.db"
-            ).build()
-            return instance
+            INSTANCE?.let {
+                return it
+            }
+            synchronized(LOCK) {
+                INSTANCE?.let {
+                    return it
+                }
+                val db = Room.databaseBuilder(
+                    application,
+                    ProductDataBase::class.java,
+                    DB_NAME
+                )
+                    .build()
+                INSTANCE = db
+                return db
+            }
         }
     }
-
-    abstract fun productDao(): ProductDao?
 }

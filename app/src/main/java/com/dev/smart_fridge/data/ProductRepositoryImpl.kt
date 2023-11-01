@@ -4,37 +4,27 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import com.dev.smart_fridge.domain.Product
 import com.dev.smart_fridge.domain.ProductRepository
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.schedulers.Schedulers
+import java.util.concurrent.Flow.Subscriber
 
-import java.lang.RuntimeException
+class ProductRepositoryImpl(application: Application) : ProductRepository {
 
-object ProductRepositoryImpl : ProductRepository {
-
-    private val productDataBase: ProductDataBase
-    private lateinit var application: Application
-
-    fun initialize(application: Application) {
-        this.application = application
-    }
-
-    init {
-        productDataBase = ProductDataBase.getInstance(application)
-    }
-
+    private val productDataBase = ProductDataBase.getInstance(application)
     override fun addProduct(product: Product) {
-        productDataBase.productDao()?.addProduct(product)
+        productDataBase.productDao().addProduct(product).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe()
     }
 
     override fun deleteProduct(productId: Long) {
-        productDataBase.productDao()?.deleteProduct(productId)
+        productDataBase.productDao().deleteProduct(productId).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe()
     }
 
     override fun getAllProduct(): LiveData<List<Product>> {
-        return productDataBase.productDao()?.getAllProducts()
-            ?: throw RuntimeException("DataBaseError")
+        return productDataBase.productDao().getAllProducts()
     }
 
     override fun getProductItem(productId: Long): Product {
-        return productDataBase.productDao()?.getProductItem(productId)
-            ?: throw RuntimeException("DataBaseError")
+        return productDataBase.productDao().getProductItem(productId)
     }
 }
