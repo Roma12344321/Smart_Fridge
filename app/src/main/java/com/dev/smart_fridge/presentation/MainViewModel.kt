@@ -2,6 +2,7 @@ package com.dev.smart_fridge.presentation
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import com.dev.smart_fridge.data.ProductRepositoryImpl
 import com.dev.smart_fridge.domain.AddProductUseCase
 import com.dev.smart_fridge.domain.DeleteProductUseCase
@@ -23,10 +24,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     fun deleteProduct(productId: Long){
         deleteProductUseCase.deleteProduct(productId)
     }
-    fun getAllProduct(){
-        getAllProductUseCase.getAllProduct()
+    fun getAllProduct():LiveData<List<Product>>{
+        return getAllProductUseCase.getAllProduct()
     }
-    fun getProductItem(productId: Long){
-        getProductItemUseCase.getProductIem(productId)
+    fun getProductItem(productId: Long):Product{
+        return getProductItemUseCase.getProductIem(productId)
     }
 }

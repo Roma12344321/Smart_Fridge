@@ -13,11 +13,11 @@ class ProductRepositoryImpl(application: Application) : ProductRepository {
 
     private val productDataBase = ProductDataBase.getInstance(application)
     override fun addProduct(product: Product) {
-        productDataBase.productDao().addProduct(product).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe()
+        productDataBase.productDao().addProduct(product)
     }
 
     override fun deleteProduct(productId: Long) {
-        productDataBase.productDao().deleteProduct(productId).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe()
+        productDataBase.productDao().deleteProduct(productId)
     }
 
     override fun getAllProduct(): LiveData<List<Product>> {

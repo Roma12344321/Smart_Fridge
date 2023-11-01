@@ -16,10 +16,10 @@ interface ProductDao {
     fun getAllProducts(): LiveData<List<Product>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun addProduct(product: Product) : Completable
+    fun addProduct(product: Product)
 
     @Query("DELETE FROM products WHERE id = :productId")
-    fun deleteProduct(productId: Long) : Completable
+    fun deleteProduct(productId: Long)
 
     @Query("SELECT * FROM products WHERE id = :productId")
     fun getProductItem(productId: Long): Product

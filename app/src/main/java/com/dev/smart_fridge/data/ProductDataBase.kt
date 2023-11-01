@@ -31,6 +31,7 @@ abstract class ProductDataBase : RoomDatabase() {
                     ProductDataBase::class.java,
                     DB_NAME
                 )
+                    .allowMainThreadQueries()
                     .build()
                 INSTANCE = db
                 return db
