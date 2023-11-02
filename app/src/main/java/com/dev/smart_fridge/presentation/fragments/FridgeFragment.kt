@@ -9,13 +9,16 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.dev.smart_fridge.R
+import com.dev.smart_fridge.domain.Product
 import com.dev.smart_fridge.presentation.MainViewModel
-import com.dev.smart_fridge.presentation.ProductAdapter
+import com.dev.smart_fridge.presentation.adapter.ProductAdapter
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class FridgeFragment : Fragment() {
 
     private lateinit var viewModel: MainViewModel
     private lateinit var productAdapter: ProductAdapter
+    private lateinit var floatingActionButton: FloatingActionButton
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -24,7 +27,10 @@ class FridgeFragment : Fragment() {
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setupRecycleView(view)
+        floatingActionButton = view.findViewById(R.id.floatingActionButton)
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
+        floatingActionButton.setOnClickListener{
+        }
         viewModel.getAllProduct().observe(viewLifecycleOwner) {
             productAdapter.submitList(it)
         }

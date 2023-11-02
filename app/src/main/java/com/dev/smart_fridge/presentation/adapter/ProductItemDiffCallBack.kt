@@ -1,4 +1,4 @@
-package com.dev.smart_fridge.presentation
+package com.dev.smart_fridge.presentation.adapter
 
 
 import androidx.recyclerview.widget.DiffUtil
