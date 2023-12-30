@@ -1,9 +1,8 @@
 package com.dev.smart_fridge.domain
 
-import androidx.lifecycle.LiveData
-import io.reactivex.rxjava3.core.Single
+import javax.inject.Inject
 
-class GetProductItemUseCase(private val productRepository: ProductRepository) {
+class GetProductItemUseCase @Inject constructor(private val productRepository: ProductRepository) {
     fun getProductIem(productId: Long): Product{
         return productRepository.getProductItem(productId)
     }

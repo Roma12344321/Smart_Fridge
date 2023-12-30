@@ -6,8 +6,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.dev.smart_fridge.domain.Product
-import io.reactivex.rxjava3.core.Completable
-import io.reactivex.rxjava3.core.Single
 
 @Dao
 interface ProductDao {
@@ -23,4 +21,6 @@ interface ProductDao {
 
     @Query("SELECT * FROM products WHERE id = :productId")
     fun getProductItem(productId: Long): Product
+    @Query("DELETE FROM products")
+    fun deleteAllProduct()
 }

@@ -1,30 +1,27 @@
 package com.dev.smart_fridge.data
 
-import android.app.Application
 import androidx.lifecycle.LiveData
 import com.dev.smart_fridge.domain.Product
 import com.dev.smart_fridge.domain.ProductRepository
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.schedulers.Schedulers
-import java.util.concurrent.Flow.Subscriber
+import javax.inject.Inject
 
-class ProductRepositoryImpl(application: Application) : ProductRepository {
+class ProductRepositoryImpl @Inject constructor(
+    private val productDao: ProductDao
+) : ProductRepository {
 
-    private val productDataBase = ProductDataBase.getInstance(application)
     override fun addProduct(product: Product) {
-        productDataBase.productDao().addProduct(product)
+        productDao.addProduct(product)
     }
 
     override fun deleteProduct(productId: Long) {
-        productDataBase.productDao().deleteProduct(productId)
+        productDao.deleteProduct(productId)
     }
 
     override fun getAllProduct(): LiveData<List<Product>> {
-        return productDataBase.productDao().getAllProducts()
+        return productDao.getAllProducts()
     }
 
     override fun getProductItem(productId: Long): Product {
-        return productDataBase.productDao().getProductItem(productId)
+        return productDao.getProductItem(productId)
     }
 }

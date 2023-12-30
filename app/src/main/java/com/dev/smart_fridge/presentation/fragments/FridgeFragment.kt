@@ -1,5 +1,6 @@
 package com.dev.smart_fridge.presentation.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,26 +11,43 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.dev.smart_fridge.R
 import com.dev.smart_fridge.domain.Product
+import com.dev.smart_fridge.presentation.FridgeApp
 import com.dev.smart_fridge.presentation.MainViewModel
+import com.dev.smart_fridge.presentation.ViewModelFactory
 import com.dev.smart_fridge.presentation.adapter.ProductAdapter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import javax.inject.Inject
 
 class FridgeFragment : Fragment() {
 
     private lateinit var viewModel: MainViewModel
     private lateinit var productAdapter: ProductAdapter
     private lateinit var floatingActionButton: FloatingActionButton
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val component by lazy {
+        (requireActivity().application as FridgeApp).component
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        component.inject(this)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_fridge, container, false)
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setupRecycleView(view)
         floatingActionButton = view.findViewById(R.id.floatingActionButton)
-        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
-        floatingActionButton.setOnClickListener{
+        viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
+        floatingActionButton.setOnClickListener {
             val dialog = AddProductDialogFragment()
             dialog.listener = object : AddProductDialogFragment.AddProductDialogListener {
                 override fun onDialogPositiveClick(productName: String, expiryDate: String) {
@@ -39,10 +57,12 @@ class FridgeFragment : Fragment() {
             }
             dialog.show(parentFragmentManager, "AddProductDialogFragment")
         }
-        viewModel.getAllProduct().observe(viewLifecycleOwner) {
+
+        viewModel.product.observe(viewLifecycleOwner) {
             productAdapter.submitList(it)
         }
     }
+
     private fun setupRecycleView(view: View) {
         val recyclerViewProduct = view.findViewById<RecyclerView>(R.id.recycleViewProduct)
         productAdapter = ProductAdapter()
