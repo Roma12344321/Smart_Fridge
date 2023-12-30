@@ -10,19 +10,28 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.dev.smart_fridge.R
+import com.dev.smart_fridge.databinding.FragmentFridgeBinding
 import com.dev.smart_fridge.domain.Product
 import com.dev.smart_fridge.presentation.FridgeApp
 import com.dev.smart_fridge.presentation.MainViewModel
 import com.dev.smart_fridge.presentation.ViewModelFactory
 import com.dev.smart_fridge.presentation.adapter.ProductAdapter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import java.lang.RuntimeException
 import javax.inject.Inject
 
 class FridgeFragment : Fragment() {
 
-    private lateinit var viewModel: MainViewModel
-    private lateinit var productAdapter: ProductAdapter
-    private lateinit var floatingActionButton: FloatingActionButton
+    private var _binding : FragmentFridgeBinding? = null
+    private val binding : FragmentFridgeBinding
+        get() = _binding ?: throw RuntimeException("FragmentFridgeBinding is null")
+
+    private val viewModel by lazy {
+        ViewModelProvider(this,viewModelFactory)[MainViewModel::class.java]
+    }
+    private val productAdapter by lazy {
+        ProductAdapter()
+    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -39,15 +48,14 @@ class FridgeFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_fridge, container, false)
+    ): View {
+        _binding = FragmentFridgeBinding.inflate(inflater,container,false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        setupRecycleView(view)
-        floatingActionButton = view.findViewById(R.id.floatingActionButton)
-        viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
-        floatingActionButton.setOnClickListener {
+        setupRecycleView()
+        binding.floatingActionButton.setOnClickListener {
             val dialog = AddProductDialogFragment()
             dialog.listener = object : AddProductDialogFragment.AddProductDialogListener {
                 override fun onDialogPositiveClick(productName: String, expiryDate: String) {
@@ -57,17 +65,14 @@ class FridgeFragment : Fragment() {
             }
             dialog.show(parentFragmentManager, "AddProductDialogFragment")
         }
-
         viewModel.product.observe(viewLifecycleOwner) {
             productAdapter.submitList(it)
         }
     }
 
-    private fun setupRecycleView(view: View) {
-        val recyclerViewProduct = view.findViewById<RecyclerView>(R.id.recycleViewProduct)
-        productAdapter = ProductAdapter()
-        recyclerViewProduct.adapter = productAdapter
-        setupSwipe(recyclerViewProduct)
+    private fun setupRecycleView() {
+        binding.recycleViewProduct.adapter = productAdapter
+        setupSwipe(binding.recycleViewProduct)
     }
 
     private fun setupSwipe(recyclerViewProduct: RecyclerView?) {
@@ -88,5 +93,10 @@ class FridgeFragment : Fragment() {
         }
         val itemTouchHelper = ItemTouchHelper(callback)
         itemTouchHelper.attachToRecyclerView(recyclerViewProduct)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

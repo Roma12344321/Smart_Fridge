@@ -9,7 +9,11 @@ import com.dev.smart_fridge.domain.RecipeItem
 class RecipeAdapter : ListAdapter<RecipeItem, RecipeViewHolder>(RecipeItemDiffCallBack()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecipeViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.recipe_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(
+            R.layout.recipe_item,
+            parent,
+            false
+        )
         return RecipeViewHolder(view)
     }
 

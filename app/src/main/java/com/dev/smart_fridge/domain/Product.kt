@@ -3,7 +3,6 @@ package com.dev.smart_fridge.domain
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import java.sql.Date
 
 @Entity(tableName = "products")
 data class Product(
