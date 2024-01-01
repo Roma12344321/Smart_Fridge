@@ -55,6 +55,11 @@ class RecipeFragment : Fragment() {
         viewModel.recipesLiveData.observe(viewLifecycleOwner) {
             recipeAdapter.submitList(it)
         }
+        viewModel.showProgressBar.observe(viewLifecycleOwner) {
+            if (it) {
+                binding.progressBarRecipe.visibility = View.VISIBLE
+            }
+        }
         recipeAdapter.onRecipeClickListener = object : RecipeAdapter.OnRecipeClickListener{
             override fun onRecipeClick(name: String) {
                 val intent = RecipeDetailInformationActivity.newInstance(requireContext(),name)

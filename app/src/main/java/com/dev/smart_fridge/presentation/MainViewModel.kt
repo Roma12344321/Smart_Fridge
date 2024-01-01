@@ -38,14 +38,20 @@ class MainViewModel @Inject constructor(
     val recipeDetailInfo : LiveData<String>
         get() = _recipeDetailInfo
 
+    private val _showProgressBar = MutableLiveData<Boolean>()
+    val showProgressBar : LiveData<Boolean>
+        get() = _showProgressBar
+
     private val scope = CoroutineScope(Dispatchers.Main)
 
     fun getRecipes() {
         scope.launch {
+            _showProgressBar.value = true
             val response = withContext(Dispatchers.IO) {
                 getRecipeUseCase.getRecipe()
             }
             _recipesLiveData.value = response
+            _showProgressBar.value = false
         }
     }
 
@@ -66,10 +72,12 @@ class MainViewModel @Inject constructor(
 
     fun getRecipeDetailInformation(name : String) {
         scope.launch {
+            _showProgressBar.value = true
             val response = withContext(Dispatchers.IO) {
                 getRecipeDetailInformationUseCase.getRecipeDetailInformation(name)
             }
             _recipeDetailInfo.value = response
+            _showProgressBar.value = false
         }
     }
 

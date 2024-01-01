@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import com.dev.smart_fridge.R
 import com.dev.smart_fridge.databinding.ActivityRecipeDetailInformationBinding
@@ -39,6 +40,11 @@ class RecipeDetailInformationActivity : AppCompatActivity() {
         viewModel.getRecipeDetailInformation(recipe)
         viewModel.recipeDetailInfo.observe(this) {
             binding.textViewDetailInfo.text = it
+        }
+        viewModel.showProgressBar.observe(this) {
+            if (it) {
+                binding.progressBarDetailInfo.visibility = View.VISIBLE
+            }
         }
     }
 
