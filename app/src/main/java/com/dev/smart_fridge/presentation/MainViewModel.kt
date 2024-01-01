@@ -11,6 +11,7 @@ import com.dev.smart_fridge.domain.GetAllProductUseCase
 import com.dev.smart_fridge.domain.GetProductItemUseCase
 import com.dev.smart_fridge.domain.GetRecipeUseCase
 import com.dev.smart_fridge.domain.Product
+import com.dev.smart_fridge.domain.RecipeItem
 import com.google.ai.client.generativeai.GenerativeModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,18 +28,18 @@ class MainViewModel @Inject constructor(
     private val getRecipeUseCase: GetRecipeUseCase
 ) : ViewModel() {
 
-    private val _recipesLiveData = MutableLiveData<String>()
-    val recipesLiveData: LiveData<String>
+    private val _recipesLiveData = MutableLiveData<List<RecipeItem>>()
+    val recipesLiveData: LiveData<List<RecipeItem>>
         get() = _recipesLiveData
 
     private val scope = CoroutineScope(Dispatchers.Main)
 
-    fun getRecipes(prompt: String) {
+    fun getRecipes() {
         scope.launch {
             val response = withContext(Dispatchers.IO) {
-                getRecipeUseCase.getRecipe(prompt)
+                getRecipeUseCase.getRecipe()
             }
-            _recipesLiveData.value = (response)
+            _recipesLiveData.value = response
         }
     }
 

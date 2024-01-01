@@ -66,10 +66,6 @@ class FridgeFragment : Fragment() {
         viewModel.product.observe(viewLifecycleOwner) {
             productAdapter.submitList(it)
         }
-        viewModel.getRecipes("Hello")
-        viewModel.recipesLiveData.observe(viewLifecycleOwner){
-            Log.d("promt",it)
-        }
     }
 
     private fun setupRecycleView() {
