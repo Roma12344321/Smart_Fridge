@@ -7,4 +7,5 @@ interface ProductRepository {
     fun deleteProduct(productId: Long)
     fun getAllProduct(): LiveData<List<Product>>
     fun getProductItem(productId: Long): Product
+    suspend fun getRecipe(promt : String) : String
 }

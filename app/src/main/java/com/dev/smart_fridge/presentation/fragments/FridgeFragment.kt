@@ -66,8 +66,8 @@ class FridgeFragment : Fragment() {
         viewModel.product.observe(viewLifecycleOwner) {
             productAdapter.submitList(it)
         }
-        viewModel.model()
-        viewModel.liveData.observe(viewLifecycleOwner){
+        viewModel.getRecipes("Hello")
+        viewModel.recipesLiveData.observe(viewLifecycleOwner){
             Log.d("promt",it)
         }
     }

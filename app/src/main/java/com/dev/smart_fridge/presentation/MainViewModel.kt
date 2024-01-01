@@ -1,6 +1,7 @@
 package com.dev.smart_fridge.presentation
 
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dev.smart_fridge.BuildConfig
@@ -8,11 +9,14 @@ import com.dev.smart_fridge.domain.AddProductUseCase
 import com.dev.smart_fridge.domain.DeleteProductUseCase
 import com.dev.smart_fridge.domain.GetAllProductUseCase
 import com.dev.smart_fridge.domain.GetProductItemUseCase
+import com.dev.smart_fridge.domain.GetRecipeUseCase
 import com.dev.smart_fridge.domain.Product
 import com.google.ai.client.generativeai.GenerativeModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(
@@ -20,32 +24,23 @@ class MainViewModel @Inject constructor(
     private val deleteProductUseCase: DeleteProductUseCase,
     private val getAllProductUseCase: GetAllProductUseCase,
     private val getProductItemUseCase: GetProductItemUseCase,
+    private val getRecipeUseCase: GetRecipeUseCase
 ) : ViewModel() {
 
-   val liveData = MutableLiveData<String>()
+    private val _recipesLiveData = MutableLiveData<String>()
+    val recipesLiveData: LiveData<String>
+        get() = _recipesLiveData
 
+    private val scope = CoroutineScope(Dispatchers.Main)
 
-    fun model(){
-
-       CoroutineScope(Dispatchers.IO).launch {
-
-           val generativeModel = GenerativeModel(
-               modelName = "gemini-pro",
-               apiKey = BuildConfig.apiKey,
-           )
-
-           val prompt = "Напиши 3 рецепта из курицы и выведи ответ в формате json"
-
-
-           val response =  generativeModel.generateContent(prompt)
-           liveData.postValue(response.text!!)
-
+    fun getRecipes(prompt: String) {
+        scope.launch {
+            val response = withContext(Dispatchers.IO) {
+                getRecipeUseCase.getRecipe(prompt)
+            }
+            _recipesLiveData.value = (response)
         }
     }
-
-
-
-
 
 
     fun addProduct(product: Product) {
@@ -57,7 +52,13 @@ class MainViewModel @Inject constructor(
     }
 
     val product = getAllProductUseCase.getAllProduct()
+
     fun getProductItem(productId: Long): Product {
         return getProductItemUseCase.getProductIem(productId)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        scope.cancel()
     }
 }
