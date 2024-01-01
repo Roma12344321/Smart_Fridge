@@ -2,12 +2,10 @@ package com.dev.smart_fridge.presentation.fragments
 
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import com.dev.smart_fridge.R
 import com.dev.smart_fridge.databinding.ActivityRecipeDetailInformationBinding
 import com.dev.smart_fridge.presentation.FridgeApp
 import com.dev.smart_fridge.presentation.MainViewModel
@@ -44,6 +42,9 @@ class RecipeDetailInformationActivity : AppCompatActivity() {
         viewModel.showProgressBar.observe(this) {
             if (it) {
                 binding.progressBarDetailInfo.visibility = View.VISIBLE
+            }
+            else{
+                binding.progressBarDetailInfo.visibility = View.GONE
             }
         }
     }

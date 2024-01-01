@@ -59,6 +59,9 @@ class RecipeFragment : Fragment() {
             if (it) {
                 binding.progressBarRecipe.visibility = View.VISIBLE
             }
+            else{
+                binding.progressBarRecipe.visibility = View.GONE
+            }
         }
         recipeAdapter.onRecipeClickListener = object : RecipeAdapter.OnRecipeClickListener{
             override fun onRecipeClick(name: String) {
