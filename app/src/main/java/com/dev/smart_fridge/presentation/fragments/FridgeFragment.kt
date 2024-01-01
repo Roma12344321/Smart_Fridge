@@ -2,6 +2,7 @@ package com.dev.smart_fridge.presentation.fragments
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -64,6 +65,10 @@ class FridgeFragment : Fragment() {
         }
         viewModel.product.observe(viewLifecycleOwner) {
             productAdapter.submitList(it)
+        }
+        viewModel.model()
+        viewModel.liveData.observe(viewLifecycleOwner){
+            Log.d("promt",it)
         }
     }
 
