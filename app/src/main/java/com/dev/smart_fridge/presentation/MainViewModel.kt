@@ -9,6 +9,7 @@ import com.dev.smart_fridge.domain.AddProductUseCase
 import com.dev.smart_fridge.domain.DeleteProductUseCase
 import com.dev.smart_fridge.domain.GetAllProductUseCase
 import com.dev.smart_fridge.domain.GetProductItemUseCase
+import com.dev.smart_fridge.domain.GetRecipeDetailInformationUseCase
 import com.dev.smart_fridge.domain.GetRecipeUseCase
 import com.dev.smart_fridge.domain.Product
 import com.dev.smart_fridge.domain.RecipeItem
@@ -25,12 +26,17 @@ class MainViewModel @Inject constructor(
     private val deleteProductUseCase: DeleteProductUseCase,
     private val getAllProductUseCase: GetAllProductUseCase,
     private val getProductItemUseCase: GetProductItemUseCase,
-    private val getRecipeUseCase: GetRecipeUseCase
+    private val getRecipeUseCase: GetRecipeUseCase,
+    private val getRecipeDetailInformationUseCase: GetRecipeDetailInformationUseCase
 ) : ViewModel() {
 
     private val _recipesLiveData = MutableLiveData<List<RecipeItem>>()
     val recipesLiveData: LiveData<List<RecipeItem>>
         get() = _recipesLiveData
+
+    private val _recipeDetailInfo = MutableLiveData<String>()
+    val recipeDetailInfo : LiveData<String>
+        get() = _recipeDetailInfo
 
     private val scope = CoroutineScope(Dispatchers.Main)
 
@@ -57,6 +63,16 @@ class MainViewModel @Inject constructor(
     fun getProductItem(productId: Long): Product {
         return getProductItemUseCase.getProductIem(productId)
     }
+
+    fun getRecipeDetailInformation(name : String) {
+        scope.launch {
+            val response = withContext(Dispatchers.IO) {
+                getRecipeDetailInformationUseCase.getRecipeDetailInformation(name)
+            }
+            _recipeDetailInfo.value = response
+        }
+    }
+
 
     override fun onCleared() {
         super.onCleared()

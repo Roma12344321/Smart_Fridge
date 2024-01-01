@@ -55,7 +55,15 @@ class RecipeFragment : Fragment() {
         viewModel.recipesLiveData.observe(viewLifecycleOwner) {
             recipeAdapter.submitList(it)
         }
+        recipeAdapter.onRecipeClickListener = object : RecipeAdapter.OnRecipeClickListener{
+            override fun onRecipeClick(name: String) {
+                val intent = RecipeDetailInformationActivity.newInstance(requireContext(),name)
+                startActivity(intent)
+            }
+        }
     }
+
+
 
     private fun setupRecycleView() {
         binding.recycleViewRecipe.adapter = recipeAdapter

@@ -42,8 +42,8 @@ class ProductRepositoryImpl @Inject constructor(
         for (i in list) {
             prompt += i.name + " "
         }
-        prompt += ". Сделай это чётко с этими полями: id: Long, name: String, minTime: String. Напиши это в виде Json, но в виде одной строки завернув объекты в массив"
-        val response = generativeModel.generateContent(prompt).text.toString()
+        prompt += JSON_PROMPT
+        val response = parseData(generativeModel.generateContent(prompt).text.toString())
         Log.d("response", prompt)
         Log.d("response", response)
         val gson = Gson()
@@ -52,7 +52,21 @@ class ProductRepositoryImpl @Inject constructor(
         return recipeItemList
     }
 
+    private fun parseData(jsonString: String): String {
+        val startIndex = jsonString.indexOf("[")
+        val endIndex = jsonString.lastIndexOf("]")
+        return jsonString.substring(startIndex, endIndex + 1)
+    }
+
+    override suspend fun getRecipeDetailInformation(name: String): String {
+        val prompt = DETAIL_INFO_PROMPT + name
+        val response = generativeModel.generateContent(prompt).text.toString()
+        return response
+    }
+
     companion object {
         private const val PROMPT = "Придумай мне рецепты из этих продуктов:"
+        private const val JSON_PROMPT = ". Сделай это чётко с этими полями: id: Long, name: String, minTime: String. Напиши это в виде Json, но в виде одной строки завернув объекты в массив"
+        private const val DETAIL_INFO_PROMPT = "Расскажи мне об этом рецепте: "
     }
 }

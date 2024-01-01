@@ -8,6 +8,8 @@ import com.dev.smart_fridge.domain.RecipeItem
 
 class RecipeAdapter : ListAdapter<RecipeItem, RecipeViewHolder>(RecipeItemDiffCallBack()) {
 
+    var onRecipeClickListener : OnRecipeClickListener? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecipeViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(
             R.layout.recipe_item,
@@ -21,5 +23,12 @@ class RecipeAdapter : ListAdapter<RecipeItem, RecipeViewHolder>(RecipeItemDiffCa
         val recipeItem = getItem(position)
         viewHolder.textViewNameRecipe.text = recipeItem.name
         viewHolder.textViewMinTimeRecipe.text = recipeItem.minTime
+        viewHolder.view.setOnClickListener {
+            onRecipeClickListener?.onRecipeClick(recipeItem.name)
+        }
+    }
+
+    interface OnRecipeClickListener {
+        fun onRecipeClick(name : String)
     }
 }
