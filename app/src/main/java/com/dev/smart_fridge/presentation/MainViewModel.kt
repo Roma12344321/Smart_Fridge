@@ -1,10 +1,6 @@
 package com.dev.smart_fridge.presentation
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import com.dev.smart_fridge.data.ProductRepositoryImpl
 import com.dev.smart_fridge.domain.AddProductUseCase
 import com.dev.smart_fridge.domain.DeleteProductUseCase
 import com.dev.smart_fridge.domain.GetAllProductUseCase

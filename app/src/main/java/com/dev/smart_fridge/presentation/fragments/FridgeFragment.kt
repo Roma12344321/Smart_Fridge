@@ -9,25 +9,22 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.dev.smart_fridge.R
 import com.dev.smart_fridge.databinding.FragmentFridgeBinding
 import com.dev.smart_fridge.domain.Product
 import com.dev.smart_fridge.presentation.FridgeApp
 import com.dev.smart_fridge.presentation.MainViewModel
 import com.dev.smart_fridge.presentation.ViewModelFactory
 import com.dev.smart_fridge.presentation.adapter.ProductAdapter
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import java.lang.RuntimeException
 import javax.inject.Inject
 
 class FridgeFragment : Fragment() {
 
-    private var _binding : FragmentFridgeBinding? = null
-    private val binding : FragmentFridgeBinding
+    private var _binding: FragmentFridgeBinding? = null
+    private val binding: FragmentFridgeBinding
         get() = _binding ?: throw RuntimeException("FragmentFridgeBinding is null")
 
     private val viewModel by lazy {
-        ViewModelProvider(this,viewModelFactory)[MainViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
     }
     private val productAdapter by lazy {
         ProductAdapter()
@@ -49,7 +46,7 @@ class FridgeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentFridgeBinding.inflate(inflater,container,false)
+        _binding = FragmentFridgeBinding.inflate(inflater, container, false)
         return binding.root
     }
 

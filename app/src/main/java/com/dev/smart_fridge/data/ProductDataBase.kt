@@ -11,7 +11,8 @@ import com.dev.smart_fridge.domain.Product
 @Database(entities = [Product::class], version = 1, exportSchema = false)
 abstract class ProductDataBase : RoomDatabase() {
 
-    abstract fun productDao():ProductDao
+    abstract fun productDao(): ProductDao
+
     companion object {
 
         private var INSTANCE: ProductDataBase? = null

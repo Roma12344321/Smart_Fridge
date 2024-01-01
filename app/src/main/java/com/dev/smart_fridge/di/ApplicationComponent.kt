@@ -7,7 +7,7 @@ import dagger.Component
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [DataModule::class,ViewModelModule::class])
+@Component(modules = [DataModule::class, ViewModelModule::class])
 interface ApplicationComponent {
 
     fun inject(fragment: FridgeFragment)
@@ -16,6 +16,6 @@ interface ApplicationComponent {
     interface Factory {
         fun create(
             @BindsInstance application: Application
-        ) : ApplicationComponent
+        ): ApplicationComponent
     }
 }

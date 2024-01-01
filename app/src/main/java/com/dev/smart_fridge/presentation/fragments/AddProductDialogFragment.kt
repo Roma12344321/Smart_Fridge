@@ -32,10 +32,11 @@ class AddProductDialogFragment : DialogFragment() {
                 val month = calendar.get(Calendar.MONTH)
                 val day = calendar.get(Calendar.DAY_OF_MONTH)
 
-                val datePickerDialog = DatePickerDialog(requireContext(), { _, year, monthOfYear, dayOfMonth ->
-                    val dateString = "${dayOfMonth}/${monthOfYear + 1}/$year"
-                    editTextProductDate.setText(dateString)
-                }, year, month, day)
+                val datePickerDialog =
+                    DatePickerDialog(requireContext(), { _, year, monthOfYear, dayOfMonth ->
+                        val dateString = "${dayOfMonth}/${monthOfYear + 1}/$year"
+                        editTextProductDate.setText(dateString)
+                    }, year, month, day)
 
                 datePickerDialog.show()
             }

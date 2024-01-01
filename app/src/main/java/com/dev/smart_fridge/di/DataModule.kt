@@ -14,11 +14,11 @@ import javax.inject.Singleton
 interface DataModule {
     @Singleton
     @Binds
-    fun bindProductRepository(impl: ProductRepositoryImpl) : ProductRepository
+    fun bindProductRepository(impl: ProductRepositoryImpl): ProductRepository
 
     companion object {
         @Provides
-        fun provideProductDao(application: Application) : ProductDao {
+        fun provideProductDao(application: Application): ProductDao {
             return ProductDataBase.getInstance(application).productDao()
         }
     }

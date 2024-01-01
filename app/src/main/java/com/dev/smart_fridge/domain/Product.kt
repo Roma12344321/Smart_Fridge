@@ -7,10 +7,10 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "products")
 data class Product(
     @PrimaryKey(autoGenerate = true)
-    val id:Long,
+    val id: Long,
     val name: String,
     val time: String
-){
+) {
     @Ignore
     constructor(name: String, time: String) : this(0, name, time)
 }
