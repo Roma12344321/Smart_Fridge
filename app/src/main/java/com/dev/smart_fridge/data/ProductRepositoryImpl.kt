@@ -1,5 +1,6 @@
 package com.dev.smart_fridge.data
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.dev.smart_fridge.BuildConfig
 import com.dev.smart_fridge.domain.Product
@@ -8,9 +9,6 @@ import com.dev.smart_fridge.domain.RecipeItem
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ProductRepositoryImpl @Inject constructor(
@@ -44,8 +42,10 @@ class ProductRepositoryImpl @Inject constructor(
         for (i in list) {
             prompt += i.name + " "
         }
-        prompt += "Сделай это в формате Json, в котором будут лежать коллекция объектов рецептов, у которых будукт поля : id: Long, name: String, minTime: String. Мне нужен только Json"
+        prompt += ". Сделай это чётко с этими полями: id: Long, name: String, minTime: String. Напиши это в виде Json, но в виде одной строки завернув объекты в массив"
         val response = generativeModel.generateContent(prompt).text.toString()
+        Log.d("response", prompt)
+        Log.d("response", response)
         val gson = Gson()
         val recipeItemListType = object : TypeToken<List<RecipeItem>>() {}.type
         val recipeItemList: List<RecipeItem> = gson.fromJson(response, recipeItemListType)
