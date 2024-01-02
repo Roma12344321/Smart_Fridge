@@ -104,17 +104,14 @@ class MainViewModel @Inject constructor(
 
     fun shouldBeDelayed() {
         scope.launch {
-            _animation.value = true
-            delay(1000)
             _animation.value = false
+            delay(250)
+            _animation.value = true
         }
     }
-
 
     override fun onCleared() {
         super.onCleared()
         scope.cancel()
     }
-
-
 }
