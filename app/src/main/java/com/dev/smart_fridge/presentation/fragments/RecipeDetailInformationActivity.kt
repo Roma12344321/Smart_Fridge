@@ -34,8 +34,10 @@ class RecipeDetailInformationActivity : AppCompatActivity() {
         component.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        val recipe = intent.getStringExtra(KEY)!!
-        viewModel.getRecipeDetailInformation(recipe)
+        val recipe = intent.getStringExtra(KEY)
+        if (recipe != null){
+            viewModel.getRecipeDetailInformation(recipe)
+        }
         viewModel.recipeDetailInfo.observe(this) {
             binding.textViewDetailInfo.text = it
         }
