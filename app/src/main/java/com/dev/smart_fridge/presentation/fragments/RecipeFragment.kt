@@ -5,17 +5,26 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.dev.smart_fridge.R
 import com.dev.smart_fridge.databinding.FragmentRecipeBinding
 import com.dev.smart_fridge.presentation.FridgeApp
 import com.dev.smart_fridge.presentation.MainViewModel
 import com.dev.smart_fridge.presentation.ViewModelFactory
 import com.dev.smart_fridge.presentation.adapter.RecipeAdapter
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class RecipeFragment : Fragment() {
+
+    private val scope = CoroutineScope(Dispatchers.Main)
 
     private var _binding: FragmentRecipeBinding? = null
     private val binding: FragmentRecipeBinding
@@ -58,10 +67,20 @@ class RecipeFragment : Fragment() {
         }
         viewModel.showProgressBar.observe(viewLifecycleOwner) {
             if (it) {
-                binding.progressBarRecipe.visibility = View.VISIBLE
+
+                binding.imageViewFridge.visibility = View.VISIBLE
+                binding.imageViewFridge.setImageResource(R.drawable.qomxb7excjpuhftx9sslw_transformed_1_)
+                binding.imageViewFridge.animation = AnimationUtils.loadAnimation(context, R.anim.shake)
             }
             else{
-                binding.progressBarRecipe.visibility = View.GONE
+                binding.imageViewFridge.clearAnimation()
+                binding.imageViewFridge.setImageResource(R.drawable.qomxb7excjpuhftx9sslw_transformed_2_)
+                scope.launch {
+                    delay(250)
+                    binding.imageViewFridge.visibility = View.GONE
+                }
+
+
             }
         }
         recipeAdapter.onRecipeClickListener = object : RecipeAdapter.OnRecipeClickListener{
@@ -85,6 +104,10 @@ class RecipeFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        scope.cancel()
         _binding = null
     }
+
+
+
 }
