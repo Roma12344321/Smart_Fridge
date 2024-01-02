@@ -1,6 +1,7 @@
 package com.dev.smart_fridge.di
 
 import android.app.Application
+import android.content.Context
 import com.dev.smart_fridge.presentation.fragments.FridgeFragment
 import com.dev.smart_fridge.presentation.fragments.RecipeDetailInformationActivity
 import com.dev.smart_fridge.presentation.fragments.RecipeFragment
@@ -21,7 +22,8 @@ interface ApplicationComponent {
     @Component.Factory
     interface Factory {
         fun create(
-            @BindsInstance application: Application
+            @BindsInstance application: Application,
+            @BindsInstance context: Context
         ): ApplicationComponent
     }
 }
