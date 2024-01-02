@@ -14,11 +14,13 @@ import com.dev.smart_fridge.domain.GetRecipeUseCase
 import com.dev.smart_fridge.domain.Product
 import com.dev.smart_fridge.domain.RecipeItem
 import com.google.ai.client.generativeai.GenerativeModel
+import com.google.ai.client.generativeai.type.ServerException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.lang.Exception
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(
@@ -35,23 +37,32 @@ class MainViewModel @Inject constructor(
         get() = _recipesLiveData
 
     private val _recipeDetailInfo = MutableLiveData<String>()
-    val recipeDetailInfo : LiveData<String>
+    val recipeDetailInfo: LiveData<String>
         get() = _recipeDetailInfo
 
     private val _showProgressBar = MutableLiveData<Boolean>()
-    val showProgressBar : LiveData<Boolean>
+    val showProgressBar: LiveData<Boolean>
         get() = _showProgressBar
+
+    private val _showCountryError = MutableLiveData<Boolean>()
+    val showCountryError: LiveData<Boolean>
+        get() = _showCountryError
 
     private val scope = CoroutineScope(Dispatchers.Main)
 
     fun getRecipes() {
         scope.launch {
-            _showProgressBar.value = true
-            val response = withContext(Dispatchers.IO) {
-                getRecipeUseCase.getRecipe()
+            try {
+                _showProgressBar.value = true
+                val response = withContext(Dispatchers.IO) {
+                    getRecipeUseCase.getRecipe()
+                }
+                _recipesLiveData.value = response
+                _showProgressBar.value = false
+            } catch (_: ServerException) {
+                _showCountryError.value = true
+            } catch (_: Exception) {
             }
-            _recipesLiveData.value = response
-            _showProgressBar.value = false
         }
     }
 
@@ -70,14 +81,19 @@ class MainViewModel @Inject constructor(
         return getProductItemUseCase.getProductIem(productId)
     }
 
-    fun getRecipeDetailInformation(name : String) {
+    fun getRecipeDetailInformation(name: String) {
         scope.launch {
-            _showProgressBar.value = true
-            val response = withContext(Dispatchers.IO) {
-                getRecipeDetailInformationUseCase.getRecipeDetailInformation(name)
+            try {
+                _showProgressBar.value = true
+                val response = withContext(Dispatchers.IO) {
+                    getRecipeDetailInformationUseCase.getRecipeDetailInformation(name)
+                }
+                _recipeDetailInfo.value = response
+                _showProgressBar.value = false
+            } catch (_: ServerException) {
+                _showCountryError.value = true
+            } catch (_: Exception) {
             }
-            _recipeDetailInfo.value = response
-            _showProgressBar.value = false
         }
     }
 

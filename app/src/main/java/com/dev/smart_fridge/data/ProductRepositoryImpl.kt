@@ -117,8 +117,7 @@ class ProductRepositoryImpl @Inject constructor(
 
     companion object {
         private const val PROMPT = "Придумай мне рецепты из этих продуктов:"
-        private const val JSON_PROMPT =
-            ". Сделай это чётко с этими полями: id: Long, name: String, minTime: String. Напиши это в виде Json, но в виде одной строки завернув объекты в массив"
+        private const val JSON_PROMPT = ". Сделай это чётко с этими полями: id: Long, name: String, minTime: String. Напиши это в виде Json, но в виде одной строки завернув объекты в массив"
         private const val DETAIL_INFO_PROMPT = "Расскажи мне об этом рецепте: "
         private const val CHANNEL_ID = "channel_id"
         private const val CHANNEL_NAME = "channel_name"
