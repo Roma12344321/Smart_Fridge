@@ -62,25 +62,24 @@ class RecipeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupRecycleView()
         viewModel.getRecipes()
+        viewModel.animation.observe(viewLifecycleOwner) {
+            if (it) {
+                binding.imageViewFridge.visibility = View.GONE
+            }
+        }
         viewModel.recipesLiveData.observe(viewLifecycleOwner) {
             recipeAdapter.submitList(it)
         }
         viewModel.showProgressBar.observe(viewLifecycleOwner) {
             if (it) {
-
                 binding.imageViewFridge.visibility = View.VISIBLE
-                binding.imageViewFridge.setImageResource(R.drawable.ic_fridge_close)
+                binding.imageViewFridge.setImageResource(R.drawable.qomxb7excjpuhftx9sslw_transformed_1_)
                 binding.imageViewFridge.animation = AnimationUtils.loadAnimation(context, R.anim.shake)
             }
             else{
                 binding.imageViewFridge.clearAnimation()
-                binding.imageViewFridge.setImageResource(R.drawable.ic_fridge_open)
-                scope.launch {
-                    delay(250)
-                    binding.imageViewFridge.visibility = View.GONE
-                }
-
-
+                binding.imageViewFridge.setImageResource(R.drawable.qomxb7excjpuhftx9sslw_transformed_2_)
+                viewModel.shouldBeDelayed()
             }
         }
         recipeAdapter.onRecipeClickListener = object : RecipeAdapter.OnRecipeClickListener{
@@ -96,18 +95,12 @@ class RecipeFragment : Fragment() {
         }
     }
 
-
-
     private fun setupRecycleView() {
         binding.recycleViewRecipe.adapter = recipeAdapter
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        scope.cancel()
         _binding = null
     }
-
-
-
 }
