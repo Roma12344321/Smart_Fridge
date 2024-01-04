@@ -17,9 +17,6 @@ import com.dev.smart_fridge.presentation.ViewModelFactory
 import com.dev.smart_fridge.presentation.adapter.RecipeAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class RecipeFragment : Fragment() {
@@ -73,12 +70,12 @@ class RecipeFragment : Fragment() {
         viewModel.showProgressBar.observe(viewLifecycleOwner) {
             if (it) {
                 binding.imageViewFridge.visibility = View.VISIBLE
-                binding.imageViewFridge.setImageResource(R.drawable.qomxb7excjpuhftx9sslw_transformed_1_)
+                binding.imageViewFridge.setImageResource(R.drawable.ic_fridge_close)
                 binding.imageViewFridge.animation = AnimationUtils.loadAnimation(context, R.anim.shake)
             }
             else{
                 binding.imageViewFridge.clearAnimation()
-                binding.imageViewFridge.setImageResource(R.drawable.qomxb7excjpuhftx9sslw_transformed_2_)
+                binding.imageViewFridge.setImageResource(R.drawable.ic_fridge_close)
                 viewModel.shouldBeDelayed()
             }
         }
