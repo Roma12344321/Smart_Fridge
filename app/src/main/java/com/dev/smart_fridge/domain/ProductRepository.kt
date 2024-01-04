@@ -8,5 +8,5 @@ interface ProductRepository {
     fun getAllProduct(): LiveData<List<Product>>
     fun getProductItem(productId: Long): Product
     suspend fun getRecipe() : List<RecipeItem>
-    suspend fun getRecipeDetailInformation(name : String) : String
+    suspend fun getRecipeDetailInformation(name : String) : RecipeDetailInformation
 }

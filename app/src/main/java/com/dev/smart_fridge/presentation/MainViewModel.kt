@@ -11,6 +11,7 @@ import com.dev.smart_fridge.domain.GetProductItemUseCase
 import com.dev.smart_fridge.domain.GetRecipeDetailInformationUseCase
 import com.dev.smart_fridge.domain.GetRecipeUseCase
 import com.dev.smart_fridge.domain.Product
+import com.dev.smart_fridge.domain.RecipeDetailInformation
 import com.dev.smart_fridge.domain.RecipeItem
 import com.google.ai.client.generativeai.type.ServerException
 import kotlinx.coroutines.CoroutineScope
@@ -38,8 +39,8 @@ class MainViewModel @Inject constructor(
     val animation: LiveData<Boolean>
         get() = _animation
 
-    private val _recipeDetailInfo = MutableLiveData<String>()
-    val recipeDetailInfo: LiveData<String>
+    private val _recipeDetailInfo = MutableLiveData<RecipeDetailInformation>()
+    val recipeDetailInfo: LiveData<RecipeDetailInformation>
         get() = _recipeDetailInfo
 
     private val _showProgressBar = MutableLiveData<Boolean>()
@@ -60,7 +61,6 @@ class MainViewModel @Inject constructor(
                 val response = withContext(Dispatchers.IO) {
                     getRecipeUseCase.getRecipe()
                 }
-
                 _showProgressBar.value = false
                 delay(400)
                 _recipesLiveData.value = response
@@ -97,8 +97,7 @@ class MainViewModel @Inject constructor(
                 _showProgressBar.value = false
             } catch (_: ServerException) {
                 _showCountryError.value = true
-            } catch (_: Exception) {
-            }
+            } catch (_: Exception) {}
         }
     }
 

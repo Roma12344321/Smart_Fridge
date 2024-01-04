@@ -5,14 +5,13 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.Context.NOTIFICATION_SERVICE
 import android.os.Build
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import com.dev.smart_fridge.BuildConfig
 import com.dev.smart_fridge.R
 import com.dev.smart_fridge.domain.Product
 import com.dev.smart_fridge.domain.ProductRepository
+import com.dev.smart_fridge.domain.RecipeDetailInformation
 import com.dev.smart_fridge.domain.RecipeItem
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.gson.Gson
@@ -23,7 +22,9 @@ import javax.inject.Inject
 
 class ProductRepositoryImpl @Inject constructor(
     private val productDao: ProductDao,
-    private val context: Context
+    private val context: Context,
+    private val gson : Gson,
+    private val generativeModel: GenerativeModel
 ) : ProductRepository {
 
     override fun addProduct(product: Product) {
@@ -32,6 +33,10 @@ class ProductRepositoryImpl @Inject constructor(
 
     override fun deleteProduct(productId: Long) {
         productDao.deleteProduct(productId)
+    }
+
+    override fun getProductItem(productId: Long): Product {
+        return productDao.getProductItem(productId)
     }
 
     override fun getAllProduct(): LiveData<List<Product>> = MediatorLiveData<List<Product>>()
@@ -47,6 +52,32 @@ class ProductRepositoryImpl @Inject constructor(
             }
         }
 
+    override suspend fun getRecipe(): List<RecipeItem> {
+        val list = productDao.getProductList()
+        var prompt = PROMPT
+        for (i in list) {
+            prompt += i.name + " "
+        }
+        prompt += JSON_PROMPT
+        val response = parseData(generativeModel.generateContent(prompt).text.toString())
+        val recipeItemListType = object : TypeToken<List<RecipeItem>>() {}.type
+        return gson.fromJson(response, recipeItemListType)
+    }
+
+    override suspend fun getRecipeDetailInformation(name: String): RecipeDetailInformation {
+        var prompt = DETAIL_INFO_PROMPT + name
+        prompt += JSON_DETAIL_PROMPT
+        val response = parsDetailInfoData(generativeModel.generateContent(prompt).text.toString())
+        val recipeDetailInfoType = object : TypeToken<RecipeDetailInformation>() {}.type
+        return gson.fromJson(response, recipeDetailInfoType)
+    }
+
+    private fun parsDetailInfoData(jsonString: String) : String {
+        val startIndex = jsonString.indexOf("{")
+        val endIndex = jsonString.lastIndexOf("}")
+        return jsonString.substring(startIndex, endIndex + 1)
+    }
+
     private fun isDateGreaterThanCurrent(dateString: String): Boolean {
         return try {
             val dateFormat = SimpleDateFormat("dd/MM/yyyy")
@@ -58,37 +89,6 @@ class ProductRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getProductItem(productId: Long): Product {
-        return productDao.getProductItem(productId)
-    }
-
-    private val generativeModel = GenerativeModel(
-        modelName = "gemini-pro",
-        apiKey = BuildConfig.apiKey,
-    )
-
-    override suspend fun getRecipe(): List<RecipeItem> {
-        val list = productDao.getProductList()
-        var prompt = PROMPT
-        for (i in list) {
-            prompt += i.name + " "
-        }
-        prompt += JSON_PROMPT
-        val response = parseData(generativeModel.generateContent(prompt).text.toString())
-        Log.d("response", prompt)
-        Log.d("response", response)
-        val gson = Gson()
-        val recipeItemListType = object : TypeToken<List<RecipeItem>>() {}.type
-        val recipeItemList: List<RecipeItem> = gson.fromJson(response, recipeItemListType)
-        return recipeItemList
-    }
-
-    override suspend fun getRecipeDetailInformation(name: String): String {
-        val prompt = DETAIL_INFO_PROMPT + name
-        val response = generativeModel.generateContent(prompt).text.toString()
-        return response
-    }
-
     private fun parseData(jsonString: String): String {
         val startIndex = jsonString.indexOf("[")
         val endIndex = jsonString.lastIndexOf("]")
@@ -97,14 +97,15 @@ class ProductRepositoryImpl @Inject constructor(
 
     private var id = 0
 
-    private fun showNotification(notificationText : String) {
-        val notificationManager = context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+    private fun showNotification(notificationText: String) {
+        val notificationManager =
+            context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannel = NotificationChannel(
                 CHANNEL_ID,
                 CHANNEL_NAME,
                 NotificationManager.IMPORTANCE_DEFAULT
-                )
+            )
             notificationManager.createNotificationChannel(notificationChannel)
         }
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
@@ -112,15 +113,17 @@ class ProductRepositoryImpl @Inject constructor(
             .setContentText(notificationText)
             .setSmallIcon(R.mipmap.ic_fridge_round)
             .build()
-        notificationManager.notify(id++,notification)
+        notificationManager.notify(id++, notification)
     }
 
     companion object {
         private const val PROMPT = "Придумай мне рецепты из этих продуктов:"
-        private const val JSON_PROMPT = ". Сделай это чётко с этими полями: id: Long, name: String, minTime: String. Напиши это в виде Json, но в виде одной строки завернув объекты в массив"
+        private const val JSON_PROMPT =
+            ". Сделай это чётко с этими полями: id: Long, name: String, minTime: String. Напиши это в виде Json, но в виде одной строки завернув объекты в массив"
         private const val DETAIL_INFO_PROMPT = "Расскажи мне об этом рецепте: "
         private const val CHANNEL_ID = "channel_id"
         private const val CHANNEL_NAME = "channel_name"
         private const val NOTIFICATION_TITLE = "Сроки истекли"
+        private const val JSON_DETAIL_PROMPT = ". Сделай это чётко с этими полями: description: String, ingredients: String, cookingMethod: String. Напиши этот объект в виде Json, но в виде одной строки"
     }
 }

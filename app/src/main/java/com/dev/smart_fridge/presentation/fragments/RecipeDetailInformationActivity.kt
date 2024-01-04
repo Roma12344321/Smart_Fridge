@@ -3,6 +3,7 @@ package com.dev.smart_fridge.presentation.fragments
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -35,18 +36,27 @@ class RecipeDetailInformationActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         val recipe = intent.getStringExtra(KEY)
-        if (recipe != null){
+        if (recipe != null) {
             viewModel.getRecipeDetailInformation(recipe)
         }
         viewModel.recipeDetailInfo.observe(this) {
-            binding.textViewDetailInfo.text = it
+            binding.textViewName.text = recipe
+            binding.textViewDescription.text = it.description
+            binding.textViewIngredients.text = it.ingredients
+            binding.textViewCookingMethod.text = it.cookingMethod
         }
         viewModel.showProgressBar.observe(this) {
             if (it) {
                 binding.progressBarDetailInfo.visibility = View.VISIBLE
+                binding.cardViewDescription.visibility = View.GONE
+                binding.cardViewIngredients.visibility = View.GONE
+                binding.cardViewCookingMethod.visibility = View.GONE
             }
-            else{
+            else {
                 binding.progressBarDetailInfo.visibility = View.GONE
+                binding.cardViewDescription.visibility = View.VISIBLE
+                binding.cardViewIngredients.visibility = View.VISIBLE
+                binding.cardViewCookingMethod.visibility = View.VISIBLE
             }
         }
     }
